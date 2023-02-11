@@ -22,5 +22,10 @@ module "scaleset" {
       disk1 = { lun = 10, caching = "ReadWrite" }
       disk2 = { lun = 11, caching = "ReadWrite" }
     }
+
+    ssh_keys = {
+      rsa1 = { algorithm = "RSA", rsa_bits = 4096 }
+      rsa2 = { algorithm = "RSA", rsa_bits = 4096 }
+    }
   }
 }

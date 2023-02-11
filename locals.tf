@@ -26,3 +26,16 @@ locals {
     }
   ])
 }
+
+locals {
+  ssh_keys = flatten([
+    for ssh_key, ssh in try(var.vmss.ssh_keys, {}) : {
+
+      ssh_key    = ssh_key
+      username   = try(ssh.username, "adminuser")
+      public_key = tls_private_key.key[ssh_key].public_key_openssh
+      algorithm  = try(ssh.algorithm, "RSA")
+      rsa_bits   = try(ssh.rsa_bits, 4096)
+    }
+  ])
+}

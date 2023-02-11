@@ -27,19 +27,31 @@ data "azurerm_key_vault" "vault" {
 #----------------------------------------------------------------------------------------
 
 resource "tls_private_key" "key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  for_each = {
+    for k, v in var.vmss.ssh_keys : k => v
+  }
+
+  algorithm = each.value.algorithm
+  rsa_bits  = each.value.rsa_bits
 }
 
 resource "azurerm_key_vault_secret" "privatekey" {
-  name         = "private-key"
-  value        = tls_private_key.key.private_key_pem
+  for_each = {
+    for k, v in var.vmss.ssh_keys : k => v
+  }
+
+  name         = "${each.key}-priv"
+  value        = tls_private_key.key[each.key].private_key_pem
   key_vault_id = data.azurerm_key_vault.vault.id
 }
 
 resource "azurerm_key_vault_secret" "public_key" {
-  name         = "public-key"
-  value        = tls_private_key.key.public_key_pem
+  for_each = {
+    for k, v in var.vmss.ssh_keys : k => v
+  }
+
+  name         = "${each.key}-pub"
+  value        = tls_private_key.key[each.key].public_key_pem
   key_vault_id = data.azurerm_key_vault.vault.id
 }
 
@@ -68,16 +80,17 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   extension_operations_enabled    = try(var.vmss.extension_operations_enabled, true)
   extensions_time_budget          = try(var.vmss.extensions_time_budget, "PT1H30M")
   overprovision                   = try(var.vmss.overprovision, true)
+  zones                           = try(var.vmss.zones, ["1", "2", "3"])
 
-  zones = try(var.vmss.zones, [
-    "1",
-    "2",
-    "3",
-  ])
+  dynamic "admin_ssh_key" {
+    for_each = {
+      for key in local.ssh_keys : key.ssh_key => key
+    }
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = tls_private_key.key.public_key_openssh
+    content {
+      username   = admin_ssh_key.value.username
+      public_key = admin_ssh_key.value.public_key
+    }
   }
 
   source_image_reference {
