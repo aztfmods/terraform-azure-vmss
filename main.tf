@@ -1,11 +1,9 @@
-data "azurerm_client_config" "current" {}
-
 #----------------------------------------------------------------------------------------
 # resourcegroups
 #----------------------------------------------------------------------------------------
 
 resource "azurerm_resource_group" "main" {
-  name     = var.vmss.resourcegroup
+  name     = var.vmss.rgname
   location = var.vmss.location
 }
 
@@ -14,14 +12,14 @@ resource "azurerm_resource_group" "main" {
 #----------------------------------------------------------------------------------------
 
 data "azurerm_subnet" "subnet" {
-  name                 = var.vmss.existing.network.subnet
-  virtual_network_name = var.vmss.existing.network.vnet
-  resource_group_name  = var.vmss.existing.network.rg
+  name                 = var.vmss.network.subnet
+  virtual_network_name = var.vmss.network.vnet
+  resource_group_name  = var.vmss.network.rg
 }
 
 data "azurerm_key_vault" "vault" {
-  name                = var.vmss.existing.vault.name
-  resource_group_name = var.vmss.existing.vault.rg
+  name                = var.vmss.vault.name
+  resource_group_name = var.vmss.vault.rg
 }
 
 #----------------------------------------------------------------------------------------
@@ -50,13 +48,32 @@ resource "azurerm_key_vault_secret" "public_key" {
 #----------------------------------------------------------------------------------------
 
 resource "azurerm_linux_virtual_machine_scale_set" "main" {
-  name                            = "vmss-bla"
-  resource_group_name             = azurerm_resource_group.main.name
-  location                        = azurerm_resource_group.main.location
-  sku                             = var.vmss.sku
-  instances                       = var.vmss.instances
-  disable_password_authentication = true
-  admin_username                  = "adminuser"
+  name                = "vmss-bla"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  sku                             = try(var.vmss.sku, "Standard_F2")
+  instances                       = try(var.vmss.instances, 2)
+  admin_username                  = try(var.vmss.admin_username, "adminuser")
+  disable_password_authentication = try(var.vmss.disable_password_authentication, true)
+  upgrade_mode                    = try(var.vmss.upgrade_mode, "Automatic")
+  provision_vm_agent              = try(var.vmss.provision_vm_agent, true)
+  platform_fault_domain_count     = try(var.vmss.platform_fault_domain_count, 2)
+  priority                        = try(var.vmss.priority, "Regular")
+  secure_boot_enabled             = try(var.vmss.secure_boot_enabled, false)
+  vtpm_enabled                    = try(var.vmss.vtpm_enabled, false)
+  zone_balance                    = try(var.vmss.zone_balance, false)
+  edge_zone                       = try(var.vmss.edge_zone, null)
+  encryption_at_host_enabled      = try(var.vmss.encryption_at_host_enabled, false)
+  extension_operations_enabled    = try(var.vmss.extension_operations_enabled, true)
+  extensions_time_budget          = try(var.vmss.extensions_time_budget, "PT1H30M")
+  overprovision                   = try(var.vmss.overprovision, true)
+
+  zones = try(var.vmss.zones, [
+    "1",
+    "2",
+    "3",
+  ])
 
   admin_ssh_key {
     username   = "adminuser"
@@ -64,15 +81,15 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   }
 
   source_image_reference {
-    publisher = var.vmss.image.publisher
-    offer     = var.vmss.image.offer
-    sku       = var.vmss.image.sku
-    version   = "latest"
+    publisher = try(var.vmss.image.publisher, "Canonical")
+    offer     = try(var.vmss.image.offer, "UbuntuServer")
+    sku       = try(var.vmss.image.sku, "18.04-LTS")
+    version   = try(var.vmss.image.version, "latest")
   }
 
   os_disk {
-    storage_account_type = "StandardSSD_LRS"
-    caching              = "ReadWrite"
+    storage_account_type = try(var.vmss.os_disk.storage_account_type, "Standard_LRS")
+    caching              = try(var.vmss.os_disk.caching, "ReadWrite")
   }
 
   dynamic "network_interface" {
