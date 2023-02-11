@@ -29,7 +29,7 @@ locals {
 
 locals {
   ssh_keys = flatten([
-    for ssh_key, ssh in try(var.vmss.ssh_keys, {}) : {
+    for ssh_key, ssh in var.vmss.ssh_keys : {
 
       ssh_key    = ssh_key
       username   = try(ssh.username, "adminuser")

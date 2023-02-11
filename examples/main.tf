@@ -24,8 +24,7 @@ module "scaleset" {
     }
 
     ssh_keys = {
-      rsa1 = { algorithm = "RSA", rsa_bits = 4096 }
-      rsa2 = { algorithm = "RSA", rsa_bits = 4096 }
+      rsa = { algorithm = "RSA", rsa_bits = 4096 }
     }
   }
 }

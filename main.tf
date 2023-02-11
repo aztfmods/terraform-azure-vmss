@@ -70,7 +70,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   disable_password_authentication = try(var.vmss.disable_password_authentication, true)
   upgrade_mode                    = try(var.vmss.upgrade_mode, "Automatic")
   provision_vm_agent              = try(var.vmss.provision_vm_agent, true)
-  platform_fault_domain_count     = try(var.vmss.platform_fault_domain_count, 2)
+  platform_fault_domain_count     = try(var.vmss.platform_fault_domain_count, 5)
   priority                        = try(var.vmss.priority, "Regular")
   secure_boot_enabled             = try(var.vmss.secure_boot_enabled, false)
   vtpm_enabled                    = try(var.vmss.vtpm_enabled, false)
