@@ -1,29 +1,5 @@
 #----------------------------------------------------------------------------------------
-# resourcegroups
-#----------------------------------------------------------------------------------------
-
-resource "azurerm_resource_group" "main" {
-  name     = var.vmss.rgname
-  location = var.vmss.location
-}
-
-#----------------------------------------------------------------------------------------
-# existing
-#----------------------------------------------------------------------------------------
-
-data "azurerm_subnet" "subnet" {
-  name                 = var.vmss.network.subnet
-  virtual_network_name = var.vmss.network.vnet
-  resource_group_name  = var.vmss.network.rg
-}
-
-data "azurerm_key_vault" "vault" {
-  name                = var.vmss.vault.name
-  resource_group_name = var.vmss.vault.rg
-}
-
-#----------------------------------------------------------------------------------------
-# generate keys / secrets
+# generate keys
 #----------------------------------------------------------------------------------------
 
 resource "tls_private_key" "key" {
@@ -35,15 +11,9 @@ resource "tls_private_key" "key" {
   rsa_bits  = each.value.rsa_bits
 }
 
-resource "azurerm_key_vault_secret" "privatekey" {
-  for_each = {
-    for k, v in var.vmss.ssh_keys : k => v
-  }
-
-  name         = "${each.key}-priv"
-  value        = tls_private_key.key[each.key].private_key_pem
-  key_vault_id = data.azurerm_key_vault.vault.id
-}
+#----------------------------------------------------------------------------------------
+# secrets
+#----------------------------------------------------------------------------------------
 
 resource "azurerm_key_vault_secret" "public_key" {
   for_each = {
@@ -52,7 +22,19 @@ resource "azurerm_key_vault_secret" "public_key" {
 
   name         = "${each.key}-pub"
   value        = tls_private_key.key[each.key].public_key_pem
-  key_vault_id = data.azurerm_key_vault.vault.id
+  key_vault_id = var.vmss.keyvault
+}
+
+#----------------------------------------------------------------------------------------
+# Generate random id
+#----------------------------------------------------------------------------------------
+
+resource "random_string" "random" {
+  length    = 4
+  min_lower = 4
+  special   = false
+  numeric   = false
+  upper     = false
 }
 
 #----------------------------------------------------------------------------------------
@@ -60,9 +42,9 @@ resource "azurerm_key_vault_secret" "public_key" {
 #----------------------------------------------------------------------------------------
 
 resource "azurerm_linux_virtual_machine_scale_set" "main" {
-  name                = "vmss-bla"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
+  name                = "vmss-${var.company}-${random_string.random.result}"
+  resource_group_name = var.vmss.resource_group
+  location            = var.vmss.location
 
   sku                             = try(var.vmss.sku, "Standard_F2")
   instances                       = try(var.vmss.instances, 2)
@@ -120,7 +102,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
       ip_configuration {
         name      = network_interface.value.ipconf_name
         primary   = true
-        subnet_id = data.azurerm_subnet.subnet.id
+        subnet_id = network_interface.value.subnet_id
       }
     }
   }

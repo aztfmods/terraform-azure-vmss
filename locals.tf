@@ -9,6 +9,7 @@ locals {
       dns_servers                   = try(nic.dns_servers, [])
       enable_accelerated_networking = try(nic.enable_accelerated_networking, false)
       enable_ip_forwarding          = try(nic.enable_ip_forwarding, false)
+      subnet_id                     = nic.subnet
     }
   ])
 }
@@ -32,7 +33,7 @@ locals {
     for ssh_key, ssh in var.vmss.ssh_keys : {
 
       ssh_key    = ssh_key
-      username   = try(ssh.username, "adminuser")
+      username   = ssh_key
       public_key = tls_private_key.key[ssh_key].public_key_openssh
       algorithm  = try(ssh.algorithm, "RSA")
       rsa_bits   = try(ssh.rsa_bits, 4096)
