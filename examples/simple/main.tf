@@ -52,6 +52,10 @@ module "kv" {
       location      = module.global.groups.demo.location
       resourcegroup = module.global.groups.demo.name
       sku           = "standard"
+      enable = {
+        rbac_auth = true
+      }
+
       contacts = {
         admin = {
           email = "dennis.kool@cloudnation.nl"
@@ -63,7 +67,7 @@ module "kv" {
 }
 
 module "vmss" {
-  source = "../"
+  source = "../../"
 
   company = module.global.company
   env     = module.global.env
