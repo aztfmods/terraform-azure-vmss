@@ -10,6 +10,7 @@ The below features are made available:
 - multiple ssh keys
 - multiple network interfaces
 - multiple data disks
+- multiple extensions
 - [terratest](https://terratest.gruntwork.io) is used to validate different integrations
 
 The below examples shows the usage when consuming the module:
@@ -89,6 +90,44 @@ module "vmss" {
     data_disks = {
       disk1 = { lun = 10, caching = "ReadWrite" }
       disk2 = { lun = 11, caching = "ReadWrite" }
+    }
+
+    ssh_keys = {
+      adminuser = {
+        algorithm = "RSA"
+        rsa_bits  = 4096
+      }
+    }
+  }
+  depends_on = [module.global]
+}
+```
+
+## Usage: extensions
+
+```hcl
+module "vmss" {
+  source = "../../"
+
+  company = module.global.company
+  env     = module.global.env
+  region  = module.global.region
+
+  vmss = {
+    location       = module.global.groups.demo.location
+    resource_group = module.global.groups.demo.name
+    keyvault       = module.kv.vaults.demo.id
+
+    network_interfaces = {
+      nic0 = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
+    }
+
+    extensions = {
+      DAExtension = {
+        publisher                  = "Microsoft.Azure.Monitoring.DependencyAgent"
+        type                       = "DependencyAgentLinux"
+        type_handler_version       = "9.5"
+      }
     }
 
     ssh_keys = {

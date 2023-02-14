@@ -40,3 +40,22 @@ locals {
     }
   ])
 }
+
+locals {
+  ext_keys = flatten([
+    for ext_key, ext in try(var.vmss.extensions, {}) : {
+
+      ext_key                    = ext_key
+      name                       = ext_key
+      publisher                  = ext.publisher
+      type                       = ext.type
+      type_handler_version       = ext.type_handler_version
+      auto_upgrade_minor_version = try(ext.auto_upgrade_minor_version, true)
+      automatic_upgrade_enabled  = try(ext.automatic_upgrade_enabled, false)
+      force_update_tag           = try(ext.force_update_tag, null)
+      protected_settings         = try(ext.protected_settings, null)
+      provision_after_extensions = try(ext.provision_after_extensions, null)
+      settings                   = try(ext.settings, null)
+    }
+  ])
+}
