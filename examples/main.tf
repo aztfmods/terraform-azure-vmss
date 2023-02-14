@@ -62,7 +62,7 @@ module "kv" {
   depends_on = [module.global]
 }
 
-module "scaleset" {
+module "vmss" {
   source = "../"
 
   company = module.global.company
@@ -73,7 +73,6 @@ module "scaleset" {
     location       = module.global.groups.demo.location
     resource_group = module.global.groups.demo.name
     keyvault       = module.kv.vaults.demo.id
-    instances      = 3
 
     network_interfaces = {
       nic0 = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
