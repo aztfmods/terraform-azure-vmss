@@ -75,6 +75,25 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     }
   }
 
+  dynamic "extension" {
+    for_each = {
+      for ext in local.ext_keys : ext.ext_key => ext
+    }
+
+    content {
+      name                       = extension.value.name
+      publisher                  = extension.value.publisher
+      type                       = extension.value.type
+      type_handler_version       = extension.value.type_handler_version
+      auto_upgrade_minor_version = extension.value.auto_upgrade_minor_version
+      automatic_upgrade_enabled  = extension.value.automatic_upgrade_enabled
+      force_update_tag           = extension.value.force_update_tag
+      protected_settings         = extension.value.protected_settings
+      provision_after_extensions = extension.value.provision_after_extensions
+      settings                   = extension.value.settings
+    }
+  }
+
   source_image_reference {
     publisher = try(var.vmss.image.publisher, "Canonical")
     offer     = try(var.vmss.image.offer, "UbuntuServer")
