@@ -124,9 +124,9 @@ module "vmss" {
 
     extensions = {
       DAExtension = {
-        publisher                  = "Microsoft.Azure.Monitoring.DependencyAgent"
-        type                       = "DependencyAgentLinux"
-        type_handler_version       = "9.5"
+        publisher            = "Microsoft.Azure.Monitoring.DependencyAgent"
+        type                 = "DependencyAgentLinux"
+        type_handler_version = "9.5"
       }
     }
 
