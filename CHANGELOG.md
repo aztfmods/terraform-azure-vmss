@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.0.0...v1.1.0) (2023-02-14)
+
+
+### Features
+
+* add extension support ([#7](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/7)) ([d6fe6b1](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/d6fe6b1b3f54205ebc4237e78a92c0824fb80a06))
+
 ## 1.0.0 (2023-02-14)
 
 
