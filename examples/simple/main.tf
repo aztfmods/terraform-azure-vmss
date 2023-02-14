@@ -63,7 +63,7 @@ module "kv" {
 }
 
 module "vmss" {
-  source = "../"
+  source = "../../"
 
   company = module.global.company
   env     = module.global.env
