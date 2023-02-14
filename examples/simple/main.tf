@@ -52,7 +52,10 @@ module "kv" {
       location      = module.global.groups.demo.location
       resourcegroup = module.global.groups.demo.name
       sku           = "standard"
-      rbac_auth     = true
+      enable = {
+        rbac_auth = true
+      }
+
       contacts = {
         admin = {
           email = "dennis.kool@cloudnation.nl"
