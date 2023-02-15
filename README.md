@@ -30,6 +30,10 @@ module "vmss" {
     resource_group = module.global.groups.demo.name
     keyvault       = module.kv.vaults.demo.id
 
+    network_interfaces = {
+      internal = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
+    }
+
     ssh_keys = {
       adminuser = {
         algorithm = "RSA"
@@ -45,7 +49,7 @@ module "vmss" {
 
 ```hcl
 module "vmss" {
-  source = "../"
+  source = "../../"
 
   company = module.global.company
   env     = module.global.env
@@ -57,8 +61,8 @@ module "vmss" {
     keyvault       = module.kv.vaults.demo.id
 
     network_interfaces = {
-      nic0 = { primary = true, enable_accelerated_networking = true }
-      nic1 = { primary = false }
+      internal = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
+      mgmt     = { primary = false, subnet = module.vnet.subnets["demo.sn2"].id }
     }
 
     ssh_keys = {
