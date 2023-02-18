@@ -22,23 +22,21 @@ module "vnet" {
   region  = module.global.region
 
   vnets = {
-    demo = {
-      location      = module.global.groups.demo.location
-      resourcegroup = module.global.groups.demo.name
-      cidr          = ["10.18.0.0/16"]
-      subnets = {
-        sn1 = {
-          cidr = ["10.18.1.0/24"]
-          rules = [
-            { name = "myhttps", priority = 100, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "443", source_address_prefix = "10.151.1.0/24", destination_address_prefix = "*" },
-            { name = "mysql", priority = 200, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "3306", source_address_prefix = "10.0.0.0/24", destination_address_prefix = "*" }
-          ]
-        }
-        sn2 = {
-          cidr = ["10.18.2.0/24"]
-        }
+    location      = module.global.groups.demo.location
+    resourcegroup = module.global.groups.demo.name
+    cidr          = ["10.18.0.0/16"]
+    subnets = {
+      internal = {
+        cidr = ["10.18.1.0/24"]
+        rules = [
+          { name = "myhttps", priority = 100, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "443", source_address_prefix = "10.151.1.0/24", destination_address_prefix = "*" },
+          { name = "mysql", priority = 200, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "3306", source_address_prefix = "10.0.0.0/24", destination_address_prefix = "*" }
+        ]
       }
     }
+      mgmt = {
+        cidr = ["10.18.1.0/24"]
+      }
   }
   depends_on = [module.global]
 }
@@ -82,8 +80,8 @@ module "vmss" {
     keyvault       = module.kv.vaults.demo.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
-      mgmt     = { primary = false, subnet = module.vnet.subnets["demo.sn2"].id }
+      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
+      mgmt     = { primary = false, subnet = module.vnet.subnets.mgmt.id }
     }
 
     ssh_keys = {
