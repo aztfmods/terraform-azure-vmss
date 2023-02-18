@@ -28,7 +28,7 @@ module "vmss" {
     keyvault       = module.kv.vaults.demo.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
+      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
     }
 
     ssh_keys = {
@@ -58,8 +58,8 @@ module "vmss" {
     keyvault       = module.kv.vaults.demo.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
-      mgmt     = { primary = false, subnet = module.vnet.subnets["demo.sn2"].id }
+      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
+      mgmt     = { primary = false, subnet = module.vnet.subnets.mgmt.id }
     }
 
     ssh_keys = {
@@ -120,7 +120,7 @@ module "vmss" {
     keyvault       = module.kv.vaults.demo.id
 
     network_interfaces = {
-      nic0 = { primary = true, subnet = module.vnet.subnets["demo.sn1"].id }
+      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
     }
 
     extensions = {
