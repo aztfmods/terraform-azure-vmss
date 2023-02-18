@@ -1,9 +1,6 @@
-![example workflow](https://github.com/aztfmods/module-azurerm-vmss/actions/workflows/validate.yml/badge.svg)
-![example workflow](https://img.shields.io/github/v/release/aztfmods/module-azurerm-vmss)
-
 # Virtual Machine Scale Sets
 
-Terraform module which creates virtual machine scale sets on Azure.
+This terraform module enables flexible and efficient management of virtual machine scale sets on azure through customizable configuration options.
 
 The below features are made available:
 
@@ -11,7 +8,7 @@ The below features are made available:
 - multiple network interfaces
 - multiple data disks
 - multiple extensions
-- [terratest](https://terratest.gruntwork.io) is used to validate different integrations
+- terratest is used to validate different integrations
 
 The below examples shows the usage when consuming the module:
 
