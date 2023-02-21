@@ -59,3 +59,24 @@ locals {
     }
   ])
 }
+
+locals {
+  rules = flatten([
+    for rule_key, rule in try(var.vmss.autoscaling.profile.rules, {}) : {
+
+      rule_key           = rule_key
+      metric_name        = rule.metric_name
+      metric_resource_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+      time_aggregation   = rule.time_aggregation
+      time_window        = rule.time_window
+      operator           = rule.operator
+      threshold          = rule.threshold
+      time_grain         = rule.time_grain
+      direction          = rule.direction
+      type               = rule.type
+      value              = rule.value
+      cooldown           = rule.cooldown
+      statistic          = rule.statistic
+    }
+  ])
+}
