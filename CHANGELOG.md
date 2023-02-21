@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.1.0...v1.2.0) (2023-02-21)
+
+
+### Features
+
+* add azurerm_monitor_autoscale_setting support ([#14](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/14)) ([a3d2b56](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/a3d2b56638796075975b6460db35c73ffd606f90))
+* add network_interface dynamic blocks ([#9](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/9)) ([2c4f725](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/2c4f725d2eae966eda17a093bd8336ad1ed6fd27))
+* small refactor due to vnet module ([#13](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/13)) ([d65765f](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/d65765f50f20d4b5bc64c4b927f733988b12f49a))
+
 ## [1.1.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.0.0...v1.1.0) (2023-02-14)
 
 
