@@ -140,3 +140,51 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     }
   }
 }
+
+#----------------------------------------------------------------------------------------
+# autoscaling
+#----------------------------------------------------------------------------------------
+
+resource "azurerm_monitor_autoscale_setting" "scaling" {
+  for_each = var.vmss.autoscaling["enable"] ? { "enable" = true } : {}
+
+  name                = "scaler"
+  resource_group_name = var.vmss.resource_group
+  location            = var.vmss.location
+  target_resource_id  = azurerm_linux_virtual_machine_scale_set.vmss.id
+
+  profile {
+    name = "default"
+    capacity {
+      default = try(var.vmss.autoscaling.profile.capacity_default, 1)
+      minimum = var.vmss.autoscaling.profile.scale_min
+      maximum = var.vmss.autoscaling.profile.scale_max
+    }
+
+    dynamic "rule" {
+      for_each = {
+        for k in local.rules : k.rule_key => k
+      }
+
+      content {
+        metric_trigger {
+          metric_name        = rule.value.metric_name
+          metric_resource_id = rule.value.metric_resource_id
+          time_aggregation   = rule.value.time_aggregation
+          time_window        = rule.value.time_window
+          time_grain         = rule.value.time_grain
+          statistic          = rule.value.statistic
+          operator           = rule.value.operator
+          threshold          = rule.value.threshold
+        }
+
+        scale_action {
+          direction = rule.value.direction
+          type      = rule.value.type
+          value     = rule.value.value
+          cooldown  = rule.value.cooldown
+        }
+      }
+    }
+  }
+}
