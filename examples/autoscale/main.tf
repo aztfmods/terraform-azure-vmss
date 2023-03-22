@@ -21,7 +21,7 @@ module "vnet" {
   env     = module.global.env
   region  = module.global.region
 
-  vnets = {
+  vnet = {
     location      = module.global.groups.demo.location
     resourcegroup = module.global.groups.demo.name
     cidr          = ["10.18.0.0/16"]
@@ -45,19 +45,14 @@ module "kv" {
   env     = module.global.env
   region  = module.global.region
 
-  vaults = {
-    demo = {
-      location      = module.global.groups.demo.location
-      resourcegroup = module.global.groups.demo.name
-      sku           = "standard"
-      enable = {
-        rbac_auth = true
-      }
+  vault = {
+    location      = module.global.groups.demo.location
+    resourcegroup = module.global.groups.demo.name
+    sku           = "standard"
 
-      contacts = {
-        admin = {
-          email = "dennis.kool@cloudnation.nl"
-        }
+    contacts = {
+      admin = {
+        email = "dennis.kool@cloudnation.nl"
       }
     }
   }
@@ -74,7 +69,7 @@ module "vmss" {
   vmss = {
     location       = module.global.groups.demo.location
     resource_group = module.global.groups.demo.name
-    keyvault       = module.kv.vaults.demo.id
+    keyvault       = module.kv.vault.id
 
     autoscaling = {
       enable = true
