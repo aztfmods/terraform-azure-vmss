@@ -1,31 +1,4 @@
 #----------------------------------------------------------------------------------------
-# generate keys
-#----------------------------------------------------------------------------------------
-
-resource "tls_private_key" "key" {
-  for_each = {
-    for k, v in var.vmss.ssh_keys : k => v
-  }
-
-  algorithm = each.value.algorithm
-  rsa_bits  = each.value.rsa_bits
-}
-
-#----------------------------------------------------------------------------------------
-# secrets
-#----------------------------------------------------------------------------------------
-
-resource "azurerm_key_vault_secret" "public_key" {
-  for_each = {
-    for k, v in var.vmss.ssh_keys : k => v
-  }
-
-  name         = "${each.key}-pub"
-  value        = tls_private_key.key[each.key].public_key_pem
-  key_vault_id = var.vmss.keyvault
-}
-
-#----------------------------------------------------------------------------------------
 # Generate random id
 #----------------------------------------------------------------------------------------
 

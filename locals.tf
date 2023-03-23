@@ -34,9 +34,7 @@ locals {
 
       ssh_key    = ssh_key
       username   = ssh_key
-      public_key = tls_private_key.key[ssh_key].public_key_openssh
-      algorithm  = try(ssh.algorithm, "RSA")
-      rsa_bits   = try(ssh.rsa_bits, 4096)
+      public_key = ssh.public_key
     }
   ])
 }
