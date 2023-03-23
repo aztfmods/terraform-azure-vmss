@@ -112,6 +112,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
       storage_account_type = data_disk.value.storage_account_type
     }
   }
+
+  lifecycle {
+    ignore_changes = [instances]
+  }
 }
 
 #----------------------------------------------------------------------------------------
