@@ -33,8 +33,7 @@ module "vmss" {
 
     ssh_keys = {
       adminuser = {
-        algorithm = "RSA"
-        rsa_bits  = 4096
+        public_key = module.kv.tls_public_key.vmss.value
       }
     }
   }
@@ -64,8 +63,7 @@ module "vmss" {
 
     ssh_keys = {
       adminuser = {
-        algorithm = "RSA"
-        rsa_bits  = 4096
+        public_key = module.kv.tls_public_key.vmss.value
       }
     }
   }
@@ -95,8 +93,7 @@ module "vmss" {
 
     ssh_keys = {
       adminuser = {
-        algorithm = "RSA"
-        rsa_bits  = 4096
+        public_key = module.kv.tls_public_key.vmss.value
       }
     }
   }
@@ -133,8 +130,7 @@ module "vmss" {
 
     ssh_keys = {
       adminuser = {
-        algorithm = "RSA"
-        rsa_bits  = 4096
+        public_key = module.kv.tls_public_key.vmss.value
       }
     }
   }

@@ -53,9 +53,15 @@ module "kv" {
       location      = module.global.groups.demo.location
       resourcegroup = module.global.groups.demo.name
       sku           = "standard"
-      enable = {
-        rbac_auth = true
+
+    secrets = {
+      tls_public_key = {
+        vmss = {
+          algorithm = "RSA"
+          rsa_bits  = 2048
+        }
       }
+    }
 
       contacts = {
         admin = {
@@ -86,8 +92,7 @@ module "vmss" {
 
     ssh_keys = {
       adminuser = {
-        algorithm = "RSA"
-        rsa_bits  = 4096
+        public_key = module.kv.tls_public_key.vmss.value
       }
     }
   }
