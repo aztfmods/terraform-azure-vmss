@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.3.0...v1.3.1) (2023-03-23)
+
+
+### Bug Fixes
+
+* ignore the instances count on the scaleset itself in case autoscaling is used ([#23](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/23)) ([7d80c32](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/7d80c329886e6801e9c7ab88a6b135063416d676))
+
 ## [1.3.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.2.0...v1.3.0) (2023-03-23)
 
 
