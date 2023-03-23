@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.2.0...v1.3.0) (2023-03-23)
+
+
+### Features
+
+* small refactor public ssh keys ([#20](https://github.com/aztfmods/module-azurerm-linux-vmss/issues/20)) ([c6e9da8](https://github.com/aztfmods/module-azurerm-linux-vmss/commit/c6e9da82c6c014fa4470e8108ec16002a817fc21))
+
 ## [1.2.0](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.1.0...v1.2.0) (2023-02-21)
 
 
