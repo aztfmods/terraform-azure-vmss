@@ -1,7 +1,4 @@
-#----------------------------------------------------------------------------------------
-# Generate random id
-#----------------------------------------------------------------------------------------
-
+# generate random id
 resource "random_string" "random" {
   length    = 4
   min_lower = 4
@@ -10,10 +7,7 @@ resource "random_string" "random" {
   upper     = false
 }
 
-#----------------------------------------------------------------------------------------
 # virtual machine scale set
-#----------------------------------------------------------------------------------------
-
 resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   name                = "vmss-${var.company}-${random_string.random.result}"
   resource_group_name = var.vmss.resource_group
@@ -118,10 +112,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 }
 
-#----------------------------------------------------------------------------------------
 # autoscaling
-#----------------------------------------------------------------------------------------
-
 resource "azurerm_monitor_autoscale_setting" "scaling" {
   for_each = var.vmss.autoscaling["enable"] ? { "enable" = true } : {}
 
