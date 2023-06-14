@@ -51,7 +51,7 @@ module "kv" {
 
     secrets = {
       tls_public_key = {
-        aks = {
+        vmss = {
           algorithm = "RSA"
           rsa_bits  = 2048
         }
