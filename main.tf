@@ -114,8 +114,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
 
 # autoscaling
 resource "azurerm_monitor_autoscale_setting" "scaling" {
-  for_each = var.vmss.autoscaling["enable"] ? { "enable" = true } : {}
-
+  //for_each = var.vmss.autoscaling["enable"] ? { "enable" = true } : {}
+for_each = try(var.vmss.autoscaling, null) != null ? { "default" = var.vmss.autoscaling } : {}
   name                = "scaler"
   resource_group_name = var.vmss.resource_group
   location            = var.vmss.location
