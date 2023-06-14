@@ -2,57 +2,56 @@ provider "azurerm" {
   features {}
 }
 
-module "global" {
-  source = "github.com/aztfmods/module-azurerm-global"
+module "region" {
+  source = "github.com/aztfmods/module-azurerm-regions"
 
-  company = "cn"
-  env     = "p"
-  region  = "weu"
+  workload    = var.workload
+  environment = var.environment
 
-  rgs = {
-    demo = { location = "westeurope" }
-  }
+  location = "westeurope"
+}
+
+module "rg" {
+  source = "github.com/aztfmods/module-azurerm-rg"
+
+  workload       = var.workload
+  environment    = var.environment
+  location_short = module.region.location_short
+  location       = module.region.location
 }
 
 module "vnet" {
   source = "github.com/aztfmods/module-azurerm-vnet"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload       = var.workload
+  environment    = var.environment
+  location_short = module.region.location_short
 
   vnet = {
-    location      = module.global.groups.demo.location
-    resourcegroup = module.global.groups.demo.name
+    location      = module.rg.group.location
+    resourcegroup = module.rg.group.name
     cidr          = ["10.18.0.0/16"]
     subnets = {
-      internal = {
-        cidr = ["10.18.1.0/24"]
-        rules = [
-          { name = "myhttps", priority = 100, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "443", source_address_prefix = "10.151.1.0/24", destination_address_prefix = "*" },
-          { name = "mysql", priority = 200, direction = "Inbound", access = "Allow", protocol = "Tcp", source_port_range = "*", destination_port_range = "3306", source_address_prefix = "10.0.0.0/24", destination_address_prefix = "*" }
-        ]
-      }
+      internal = { cidr = ["10.18.1.0/24"] }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 
 module "kv" {
   source = "github.com/aztfmods/module-azurerm-kv"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload       = var.workload
+  environment    = var.environment
+  location_short = module.region.location_short
 
   vault = {
-    location      = module.global.groups.demo.location
-    resourcegroup = module.global.groups.demo.name
-    sku           = "standard"
+    location      = module.rg.group.location
+    resourcegroup = module.rg.group.name
 
     secrets = {
       tls_public_key = {
-        vmss = {
+        aks = {
           algorithm = "RSA"
           rsa_bits  = 2048
         }
@@ -61,23 +60,23 @@ module "kv" {
 
     contacts = {
       admin = {
-        email = "dennis.kool@cloudnation.nl"
+        email = "dummy@cloudnation.nl"
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 
 module "vmss" {
   source = "../../"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload       = var.workload
+  environment    = var.environment
+  location_short = module.region.location_short
 
   vmss = {
-    location       = module.global.groups.demo.location
-    resource_group = module.global.groups.demo.name
+    location       = module.rg.group.location
+    resource_group = module.rg.group.name
     keyvault       = module.kv.vault.id
 
     autoscaling = {
@@ -102,5 +101,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
+

@@ -9,7 +9,7 @@ resource "random_string" "random" {
 
 # virtual machine scale set
 resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
-  name                = "vmss-${var.company}-${random_string.random.result}"
+  name                = "vmss-${var.workload}-${var.environment}-${var.location_short}-${random_string.random.result}"
   resource_group_name = var.vmss.resource_group
   location            = var.vmss.location
 
