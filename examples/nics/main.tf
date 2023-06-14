@@ -14,7 +14,7 @@ module "region" {
 module "rg" {
   source = "github.com/aztfmods/module-azurerm-rg"
 
-  workload       = var.workloadj
+  workload       = var.workload
   environment    = var.environment
   location_short = module.region.location_short
   location       = module.region.location
