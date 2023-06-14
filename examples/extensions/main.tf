@@ -77,7 +77,7 @@ module "vmss" {
   vmss = {
     location       = module.rg.group.location
     resource_group = module.rg.group.name
-    keyvault       = module.kv.vaults.demo.id
+    keyvault       = module.kv.vault.id
 
     network_interfaces = {
       nic0 = { primary = true, subnet = module.vnet.subnets.internal.id }
