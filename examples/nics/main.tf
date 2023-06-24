@@ -2,38 +2,35 @@ provider "azurerm" {
   features {}
 }
 
-module "region" {
-  source = "github.com/aztfmods/module-azurerm-regions"
-
-  workload    = var.workload
-  environment = var.environment
-
-  location = "westeurope"
-}
-
 module "rg" {
   source = "github.com/aztfmods/module-azurerm-rg"
 
-  workload       = var.workload
-  environment    = var.environment
-  location_short = module.region.location_short
-  location       = module.region.location
+  environment = var.environment
+
+  groups = {
+    demo = {
+      region = "westeurope"
+    }
+  }
 }
 
 module "vnet" {
   source = "github.com/aztfmods/module-azurerm-vnet"
 
-  workload       = var.workload
-  environment    = var.environment
-  location_short = module.region.location_short
+  workload    = var.workload
+  environment = var.environment
 
   vnet = {
-    location      = module.rg.group.location
-    resourcegroup = module.rg.group.name
+    location      = module.rg.groups.demo.location
+    resourcegroup = module.rg.groups.demo.name
     cidr          = ["10.18.0.0/16"]
     subnets = {
-      internal = { cidr = ["10.18.1.0/24"] }
-      mgmt     = { cidr = ["10.18.2.0/24"] }
+      internal = {
+        cidr = ["10.18.1.0/24"]
+      }
+      mgmt = {
+        cidr = ["10.18.2.0/24"]
+      }
     }
   }
   depends_on = [module.rg]
@@ -42,13 +39,12 @@ module "vnet" {
 module "kv" {
   source = "github.com/aztfmods/module-azurerm-kv"
 
-  workload       = var.workload
-  environment    = var.environment
-  location_short = module.region.location_short
+  workload    = var.workload
+  environment = var.environment
 
   vault = {
-    location      = module.rg.group.location
-    resourcegroup = module.rg.group.name
+    location      = module.rg.groups.demo.location
+    resourcegroup = module.rg.groups.demo.name
 
     secrets = {
       tls_public_key = {
@@ -71,18 +67,23 @@ module "kv" {
 module "vmss" {
   source = "../../"
 
-  workload       = var.workload
-  environment    = var.environment
-  location_short = module.region.location_short
+  workload    = var.workload
+  environment = var.environment
 
   vmss = {
-    location       = module.rg.group.location
-    resource_group = module.rg.group.name
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
     keyvault       = module.kv.vault.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
-      mgmt     = { primary = false, subnet = module.vnet.subnets.mgmt.id }
+      internal = {
+        primary = true
+        subnet  = module.vnet.subnets.internal.id
+      }
+      mgmt = {
+        primary = false
+        subnet  = module.vnet.subnets.mgmt.id
+      }
     }
 
     ssh_keys = {
