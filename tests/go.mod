@@ -2,7 +2,11 @@ module github.com/aztfmods/terraform-azure-vmss
 
 go 1.20
 
+<<<<<<< HEAD
 require github.com/gruntwork-io/terratest v0.43.6
+=======
+require github.com/gruntwork-io/terratest v0.43.4
+>>>>>>> 504dfbb589c8caf0be1c36ba29a38f4191ee2ffa
 
 require (
 	cloud.google.com/go v0.105.0 // indirect
