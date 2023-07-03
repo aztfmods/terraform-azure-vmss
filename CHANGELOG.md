@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.3.1...v1.4.0) (2023-07-03)
+
+
+### Features
+
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#37](https://github.com/aztfmods/terraform-azure-vmss/issues/37)) ([504dfbb](https://github.com/aztfmods/terraform-azure-vmss/commit/504dfbb589c8caf0be1c36ba29a38f4191ee2ffa))
+
 ## [1.3.1](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.3.0...v1.3.1) (2023-03-23)
 
 
