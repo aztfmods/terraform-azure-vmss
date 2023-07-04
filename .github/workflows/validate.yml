@@ -5,10 +5,8 @@ on:
 
 jobs:
   build:
-    name: validate
-    uses: aztfmods/module-azurerm-global/.github/workflows/validate.yml@main
+    uses: aztfmods/workflows-shared/.github/workflows/validate.yml@main
     with:
-      test: nics
       workload: demo
       environment: dev
     secrets:

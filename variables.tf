@@ -1,3 +1,11 @@
-variable "vmss" {}
-variable "workload" {}
-variable "environment" {}
+variable "vmss" {
+  type = any
+}
+
+variable "workload" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}

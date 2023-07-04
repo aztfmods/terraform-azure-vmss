@@ -2,12 +2,20 @@
 
 This terraform module enables flexible and efficient management of virtual machine scale sets on azure through customizable configuration options.
 
-The below features are made available:
+## Goals
 
-- multiple ssh keys
-- multiple network interfaces
-- multiple data disks
-- multiple extensions
+The main objective is to create a more logic data structure, achieved by combining and grouping related resources together in a complex object.
+
+The structure of the module promotes reusability. It's intended to be a repeatable component, simplifying the process of building diverse workloads and platform accelerators consistently.
+
+A key objective is to employ keys and values within the object that align with the REST API's structure. This paves the way for multiple iterations and expansions, enriching its practical application over time.
+
+## Features
+
+- the capability to handle multiple SSH keys.
+- the inclusion of multiple network interfaces.
+- the support for multiple data disks.
+- the flexibility to incorporate multiple extensions
 - terratest is used to validate different integrations
 
 The below examples shows the usage when consuming the module:
@@ -16,19 +24,21 @@ The below examples shows the usage when consuming the module:
 
 ```hcl
 module "vmss" {
-  source = "../"
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload    = var.workload
+  environment = var.environment
 
   vmss = {
-    location       = module.global.groups.demo.location
-    resource_group = module.global.groups.demo.name
-    keyvault       = module.kv.vaults.demo.id
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+    keyvault       = module.kv.vault.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
+      internal = {
+        primary = true
+        subnet  = module.vnet.subnets.internal.id
+      }
     }
 
     ssh_keys = {
@@ -37,7 +47,7 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 ```
 
@@ -45,20 +55,25 @@ module "vmss" {
 
 ```hcl
 module "vmss" {
-  source = "../../"
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload    = var.workload
+  environment = var.environment
 
   vmss = {
-    location       = module.global.groups.demo.location
-    resource_group = module.global.groups.demo.name
-    keyvault       = module.kv.vaults.demo.id
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+    keyvault       = module.kv.vault.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
-      mgmt     = { primary = false, subnet = module.vnet.subnets.mgmt.id }
+      internal = {
+        primary = true
+        subnet  = module.vnet.subnets.internal.id
+      }
+      mgmt = {
+        primary = false
+        subnet  = module.vnet.subnets.mgmt.id
+      }
     }
 
     ssh_keys = {
@@ -67,7 +82,7 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 ```
 
@@ -75,20 +90,26 @@ module "vmss" {
 
 ```hcl
 module "vmss" {
-  source = "../"
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload    = var.workload
+  environment = var.environment
 
   vmss = {
-    location       = module.global.groups.demo.location
-    resource_group = module.global.groups.demo.name
-    keyvault       = module.kv.vaults.demo.id
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+    keyvault       = module.kv.vault.id
 
     data_disks = {
       disk1 = { lun = 10, caching = "ReadWrite" }
       disk2 = { lun = 11, caching = "ReadWrite" }
+    }
+
+    network_interfaces = {
+      internal = {
+        primary = true
+        subnet  = module.vnet.subnets.internal.id
+      }
     }
 
     ssh_keys = {
@@ -97,7 +118,7 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 ```
 
@@ -105,19 +126,21 @@ module "vmss" {
 
 ```hcl
 module "vmss" {
-  source = "../../"
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
 
-  company = module.global.company
-  env     = module.global.env
-  region  = module.global.region
+  workload    = var.workload
+  environment = var.environment
 
   vmss = {
-    location       = module.global.groups.demo.location
-    resource_group = module.global.groups.demo.name
-    keyvault       = module.kv.vaults.demo.id
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+    keyvault       = module.kv.vault.id
 
     network_interfaces = {
-      internal = { primary = true, subnet = module.vnet.subnets.internal.id }
+      nic0 = {
+        primary = true
+        subnet  = module.vnet.subnets.internal.id
+      }
     }
 
     extensions = {
@@ -134,7 +157,7 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.global]
+  depends_on = [module.rg]
 }
 ```
 
@@ -153,9 +176,8 @@ module "vmss" {
 | Name | Description | Type | Required |
 | :-- | :-- | :-- | :-- |
 | `vmss` | describes the virtual machine scale set related configuration | object | yes |
-| `company` | contains the company name used, for naming convention	| string | yes |
-| `region` | contains the shortname of the region, used for naming convention	| string | yes |
-| `env` | contains shortname of the environment used for naming convention	| string | yes |
+| `workload` | contains the workload name used, for naming convention	| string | yes |
+| `environment` | contains shortname of the environment used for naming convention	| string | yes |
 
 ## Outputs
 
@@ -163,10 +185,30 @@ module "vmss" {
 | :-- | :-- |
 | `vmss` | contains all virtual machine scale sets |
 
+## Testing
+
+The github repository utilizes a Makefile to conduct tests to evaluate and validate different configurations of the module. These tests are designed to enhance its stability and reliability.
+
+Before initiating the tests, please ensure that both go and terraform are properly installed on your system.
+
+The [Makefile](Makefile) incorporates three distinct test variations. The first one, a local deployment test, is designed for local deployments and allows the overriding of workload and environment values. It includes additional checks and can be initiated using the command ```make test_local```.
+
+The second variation is an extended test. This test performs additional validations and serves as the default test for the module within the github workflow.
+
+The third variation allows for specific deployment tests. By providing a unique test name in the github workflow, it overrides the default extended test, executing the specific deployment test instead.
+
+Each of these tests contributes to the robustness and resilience of the module. They ensure the module performs consistently and accurately under different scenarios and configurations.
+
 ## Authors
 
-Module is maintained by [Dennis Kool](https://github.com/dkooll) with help from [these awesome contributors](https://github.com/aztfmods/module-azurerm-vmss/graphs/contributors).
+Module is maintained by [Dennis Kool](https://github.com/dkooll).
 
 ## License
 
 MIT Licensed. See [LICENSE](https://github.com/aztfmods/module-azurerm-vmss/blob/main/LICENSE) for full details.
+
+## Reference
+
+- [Virtual Machine Scale Sets Documentation - Microsoft docs](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/)
+- [Virtual Machine Scale Sets Rest Api - Microsoft docs](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machine-scale-sets)
+
