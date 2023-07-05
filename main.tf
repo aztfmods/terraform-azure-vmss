@@ -13,7 +13,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   resource_group_name = var.vmss.resource_group
   location            = var.vmss.location
 
-  sku                             = try(var.vmss.sku, "Standard_F2")
+  sku                             = try(var.vmss.sku, "Standard_DS1_v2")
   instances                       = try(var.vmss.instances, 2)
   admin_username                  = try(var.vmss.admin_username, "adminuser")
   disable_password_authentication = try(var.vmss.disable_password_authentication, true)
@@ -29,7 +29,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   extension_operations_enabled    = try(var.vmss.extension_operations_enabled, true)
   extensions_time_budget          = try(var.vmss.extensions_time_budget, "PT1H30M")
   overprovision                   = try(var.vmss.overprovision, true)
-  zones                           = try(var.vmss.zones, ["1", "2", "3"])
+  zones                           = try(var.vmss.zones, ["2"])
 
   dynamic "admin_ssh_key" {
     for_each = {
@@ -87,7 +87,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
 
       ip_configuration {
         name      = network_interface.value.ipconf_name
-        primary   = true
+        primary   = network_interface.value.primary
         subnet_id = network_interface.value.subnet_id
       }
     }

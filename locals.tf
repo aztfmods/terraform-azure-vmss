@@ -1,10 +1,10 @@
 locals {
   interfaces = flatten([
-    for interface_key, nic in var.vmss.network_interfaces : {
+    for interface_key, nic in var.vmss.interfaces : {
 
       interface_key                 = interface_key
       nic_name                      = "nic-${interface_key}"
-      primary                       = nic.primary
+      primary                       = try(nic.primary, false)
       ipconf_name                   = "ipconf-${interface_key}"
       dns_servers                   = try(nic.dns_servers, [])
       enable_accelerated_networking = try(nic.enable_accelerated_networking, false)
