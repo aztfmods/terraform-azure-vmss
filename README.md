@@ -8,7 +8,7 @@ The main objective is to create a more logic data structure, achieved by combini
 
 The structure of the module promotes reusability. It's intended to be a repeatable component, simplifying the process of building diverse workloads and platform accelerators consistently.
 
-A key objective is to employ keys and values within the object that align with the REST API's structure. This paves the way for multiple iterations and expansions, enriching its practical application over time.
+A primary goal is to utilize keys and values in the object that correspond to the REST API's structure. This enables us to carry out iterations, increasing its practical value as time goes on.
 
 ## Features
 
@@ -16,7 +16,8 @@ A key objective is to employ keys and values within the object that align with t
 - the inclusion of multiple network interfaces.
 - the support for multiple data disks.
 - the flexibility to incorporate multiple extensions
-- terratest is used to validate different integrations
+- utilization of terratest for robust validation.
+- autoscaling capabilities with the use of multiple rules.
 
 The below examples shows the usage when consuming the module:
 
@@ -205,7 +206,7 @@ Module is maintained by [Dennis Kool](https://github.com/dkooll).
 
 ## License
 
-MIT Licensed. See [LICENSE](https://github.com/aztfmods/module-azurerm-vmss/blob/main/LICENSE) for full details.
+MIT Licensed. See [LICENSE](https://github.com/aztfmods/terraform-azure-vmss/blob/main/LICENSE) for full details.
 
 ## Reference
 
