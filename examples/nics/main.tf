@@ -65,8 +65,8 @@ module "kv" {
 }
 
 module "vmss" {
-  //source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
-  source      = "../../"
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
+
   workload    = var.workload
   environment = var.environment
 

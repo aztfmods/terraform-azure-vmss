@@ -38,7 +38,7 @@ module "vmss" {
     keyvault       = module.kv.vault.id
 
     interfaces = {
-      internal = { subnet = module.vnet.subnets.internal.id }
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
     }
 
     ssh_keys = {
@@ -100,7 +100,7 @@ module "vmss" {
     }
 
     interfaces = {
-      internal = { subnet = module.vnet.subnets.internal.id }
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
     }
 
     ssh_keys = {
@@ -128,7 +128,7 @@ module "vmss" {
     keyvault       = module.kv.vault.id
 
     interfaces = {
-      internal = { subnet = module.vnet.subnets.internal.id }
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
     }
 
     extensions = {
@@ -176,7 +176,7 @@ module "vmss" {
     }
 
     interfaces = {
-      internal = { subnet = module.vnet.subnets.internal.id }
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
     }
 
     ssh_keys = {
