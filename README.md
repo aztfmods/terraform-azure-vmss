@@ -10,6 +10,8 @@ The structure of the module promotes reusability. It's intended to be a repeatab
 
 A primary goal is to utilize keys and values in the object that correspond to the REST API's structure. This enables us to carry out iterations, increasing its practical value as time goes on.
 
+A last key goal is to separate logic from configuration in the module, thereby enhancing its scalability, ease of customization, and manageability.
+
 ## Features
 
 - the capability to handle multiple SSH keys.
@@ -35,11 +37,8 @@ module "vmss" {
     resource_group = module.rg.groups.demo.name
     keyvault       = module.kv.vault.id
 
-    network_interfaces = {
-      internal = {
-        primary = true
-        subnet  = module.vnet.subnets.internal.id
-      }
+    interfaces = {
+      internal = { subnet = module.vnet.subnets.internal.id }
     }
 
     ssh_keys = {
@@ -66,15 +65,9 @@ module "vmss" {
     resource_group = module.rg.groups.demo.name
     keyvault       = module.kv.vault.id
 
-    network_interfaces = {
-      internal = {
-        primary = true
-        subnet  = module.vnet.subnets.internal.id
-      }
-      mgmt = {
-        primary = false
-        subnet  = module.vnet.subnets.mgmt.id
-      }
+    interfaces = {
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
+      mgmt     = { subnet = module.vnet.subnets.mgmt.id }
     }
 
     ssh_keys = {
@@ -106,11 +99,8 @@ module "vmss" {
       disk2 = { lun = 11, caching = "ReadWrite" }
     }
 
-    network_interfaces = {
-      internal = {
-        primary = true
-        subnet  = module.vnet.subnets.internal.id
-      }
+    interfaces = {
+      internal = { subnet = module.vnet.subnets.internal.id }
     }
 
     ssh_keys = {
@@ -137,11 +127,8 @@ module "vmss" {
     resource_group = module.rg.groups.demo.name
     keyvault       = module.kv.vault.id
 
-    network_interfaces = {
-      nic0 = {
-        primary = true
-        subnet  = module.vnet.subnets.internal.id
-      }
+    interfaces = {
+      internal = { subnet = module.vnet.subnets.internal.id }
     }
 
     extensions = {
@@ -150,6 +137,46 @@ module "vmss" {
         type                 = "DependencyAgentLinux"
         type_handler_version = "9.5"
       }
+    }
+
+    ssh_keys = {
+      adminuser = {
+        public_key = module.kv.tls_public_key.vmss.value
+      }
+    }
+  }
+  depends_on = [module.rg]
+}
+```
+
+## Usage: autoscale
+
+```hcl
+module "vmss" {
+  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
+
+  workload    = var.workload
+  environment = var.environment
+
+  vmss = {
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+    keyvault       = module.kv.vault.id
+
+    autoscaling = {
+      enable = true
+      profile = {
+        scale_min = 1
+        scale_max = 5
+        rules = {
+          increase = { metric_name = "Percentage CPU", time_grain = "PT1M", statistic = "Average", time_window = "PT5M", time_aggregation = "Average", operator = "GreaterThan", threshold = 80, direction = "Increase", value = 1, cooldown = "PT1M", type = "ChangeCount" }
+          decrease = { metric_name = "Percentage CPU", time_grain = "PT1M", statistic = "Average", time_window = "PT5M", time_aggregation = "Average", operator = "LessThan", threshold = 20, direction = "Decrease", value = 1, cooldown = "PT1M", type = "ChangeCount" }
+        }
+      }
+    }
+
+    interfaces = {
+      internal = { subnet = module.vnet.subnets.internal.id }
     }
 
     ssh_keys = {
