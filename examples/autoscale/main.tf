@@ -86,6 +86,7 @@ module "vmss" {
 
     interfaces = {
       internal = { subnet = module.vnet.subnets.internal.id, primary = true }
+      mgmt     = { subnet = module.vnet.subnets.mgmt.id }
     }
 
     ssh_keys = {
