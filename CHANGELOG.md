@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.3.1...v1.4.0) (2023-07-05)
+
+
+### Features
+
+* change data structure abit regarding interfaces ([#41](https://github.com/aztfmods/terraform-azure-vmss/issues/41)) ([15e6a23](https://github.com/aztfmods/terraform-azure-vmss/commit/15e6a232c55a5c9eaf7b6e8125fceea84b562968))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#37](https://github.com/aztfmods/terraform-azure-vmss/issues/37)) ([504dfbb](https://github.com/aztfmods/terraform-azure-vmss/commit/504dfbb589c8caf0be1c36ba29a38f4191ee2ffa))
+* solve linting issues and update documentation ([#39](https://github.com/aztfmods/terraform-azure-vmss/issues/39)) ([b72bd6f](https://github.com/aztfmods/terraform-azure-vmss/commit/b72bd6f9e56b8f82c94e58422bc6341a875d69ed))
+
 ## [1.3.1](https://github.com/aztfmods/module-azurerm-linux-vmss/compare/v1.3.0...v1.3.1) (2023-03-23)
 
 
