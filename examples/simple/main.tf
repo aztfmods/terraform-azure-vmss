@@ -15,7 +15,7 @@ module "rg" {
 }
 
 module "vnet" {
-  source = "github.com/aztfmods/terraform-azure-vnet?ref=v1.13.0"
+  source = "github.com/aztfmods/terraform-azure-vnet?ref=v1.16.0"
 
   workload    = var.workload
   environment = var.environment
@@ -30,7 +30,6 @@ module "vnet" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 
 module "kv" {
@@ -58,7 +57,6 @@ module "kv" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 
 module "vmss" {
@@ -73,8 +71,10 @@ module "vmss" {
     keyvault       = module.kv.vault.id
 
     interfaces = {
-      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
-      mgmt     = { subnet = module.vnet.subnets.mgmt.id }
+      internal = {
+        subnet = module.vnet.subnets.internal.id
+        primary = true
+      }
     }
 
     ssh_keys = {
@@ -83,5 +83,4 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }

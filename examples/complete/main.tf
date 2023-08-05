@@ -25,12 +25,8 @@ module "vnet" {
     resourcegroup = module.rg.groups.demo.name
     cidr          = ["10.18.0.0/16"]
     subnets = {
-      internal = {
-        cidr = ["10.18.1.0/24"]
-      }
-      mgmt = {
-        cidr = ["10.18.2.0/24"]
-      }
+      internal = { cidr = ["10.18.1.0/24"] }
+      mgmt     = { cidr = ["10.18.2.0/24"] }
     }
   }
 }
@@ -60,11 +56,12 @@ module "kv" {
       }
     }
   }
+
 }
 
-module "vmss" {
-  source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.3.1"
-
+module "scaleset" {
+  #source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.4.0"
+  source = "../../"
   workload    = var.workload
   environment = var.environment
 
@@ -78,6 +75,14 @@ module "vmss" {
       mgmt     = { subnet = module.vnet.subnets.mgmt.id }
     }
 
+    extensions = {
+      DAExtension = {
+        publisher            = "Microsoft.Azure.Monitoring.DependencyAgent"
+        type                 = "DependencyAgentLinux"
+        type_handler_version = "9.5"
+      }
+    }
+
     ssh_keys = {
       adminuser = {
         public_key = module.kv.tls_public_key.vmss.value
@@ -85,4 +90,3 @@ module "vmss" {
     }
   }
 }
-

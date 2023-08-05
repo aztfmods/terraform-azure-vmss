@@ -9,5 +9,5 @@ export USECASE
 test:
 	cd tests && go test -v -timeout 60m -run TestApplyNoError/$(USECASE) ./vmss_test.go
 
-#test_local:
+test_local:
 

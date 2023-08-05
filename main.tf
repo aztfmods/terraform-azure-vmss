@@ -1,3 +1,5 @@
+data "azurerm_subscription" "current" {}
+
 # generate random id
 resource "random_string" "random" {
   length    = 4
