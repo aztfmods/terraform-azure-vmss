@@ -48,7 +48,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 ```
 
@@ -77,7 +76,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 ```
 
@@ -111,7 +109,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 ```
 
@@ -148,7 +145,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 ```
 
@@ -189,7 +185,6 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 ```
 
@@ -241,6 +236,6 @@ MIT Licensed. See [LICENSE](https://github.com/aztfmods/terraform-azure-vmss/blo
 
 ## Reference
 
-- [Virtual Machine Scale Sets Documentation - Microsoft docs](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/)
-- [Virtual Machine Scale Sets Rest Api - Microsoft docs](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machine-scale-sets)
-
+- [Documentation](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/)
+- [Rest Api](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machine-scale-sets)
+- [Rest Api Specs](https://github.com/Azure/azure-rest-api-specs/blob/main/specification/compute/resource-manager/Microsoft.Compute/ComputeRP/stable/2023-03-01/virtualMachineScaleSet.json)

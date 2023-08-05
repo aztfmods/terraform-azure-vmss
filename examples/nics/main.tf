@@ -33,7 +33,6 @@ module "vnet" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 
 module "kv" {
@@ -61,7 +60,6 @@ module "kv" {
       }
     }
   }
-  depends_on = [module.rg]
 }
 
 module "vmss" {
@@ -86,6 +84,4 @@ module "vmss" {
       }
     }
   }
-  depends_on = [module.rg]
 }
-
