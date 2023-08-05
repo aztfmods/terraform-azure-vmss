@@ -15,7 +15,7 @@ module "rg" {
 }
 
 module "vnet" {
-  source = "github.com/aztfmods/terraform-azure-vnet?ref=v1.16.0"
+  source = "github.com/aztfmods/terraform-azure-vnet?ref=v1.13.0"
 
   workload    = var.workload
   environment = var.environment
@@ -25,9 +25,8 @@ module "vnet" {
     resourcegroup = module.rg.groups.demo.name
     cidr          = ["10.18.0.0/16"]
     subnets = {
-      internal = {
-        cidr = ["10.18.1.0/24"]
-      }
+      internal = { cidr = ["10.18.1.0/24"] }
+      mgmt     = { cidr = ["10.18.2.0/24"] }
     }
   }
 }
@@ -57,11 +56,12 @@ module "kv" {
       }
     }
   }
+
 }
 
-module "vmss" {
-  source = "../../"
-
+module "scaleset" {
+  #source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.4.0"
+  source      = "../../"
   workload    = var.workload
   environment = var.environment
 
@@ -71,9 +71,15 @@ module "vmss" {
     keyvault       = module.kv.vault.id
 
     interfaces = {
-      internal = {
-        subnet  = module.vnet.subnets.internal.id
-        primary = true
+      internal = { subnet = module.vnet.subnets.internal.id, primary = true }
+      mgmt     = { subnet = module.vnet.subnets.mgmt.id }
+    }
+
+    extensions = {
+      DAExtension = {
+        publisher            = "Microsoft.Azure.Monitoring.DependencyAgent"
+        type                 = "DependencyAgentLinux"
+        type_handler_version = "9.5"
       }
     }
 
