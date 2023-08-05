@@ -72,7 +72,7 @@ module "vmss" {
 
     interfaces = {
       internal = {
-        subnet = module.vnet.subnets.internal.id
+        subnet  = module.vnet.subnets.internal.id
         primary = true
       }
     }

@@ -61,7 +61,7 @@ module "kv" {
 
 module "scaleset" {
   #source = "github.com/aztfmods/terraform-azure-vmss?ref=v1.4.0"
-  source = "../../"
+  source      = "../../"
   workload    = var.workload
   environment = var.environment
 

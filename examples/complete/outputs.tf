@@ -1,5 +1,5 @@
 output "vmss" {
-  value = module.scaleset.vmss
+  value     = module.scaleset.vmss
   sensitive = true
 }
 
