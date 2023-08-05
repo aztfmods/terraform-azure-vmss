@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.4.0...v1.5.0) (2023-08-05)
+
+
+### Features
+
+* add extended tests ([#42](https://github.com/aztfmods/terraform-azure-vmss/issues/42)) ([974f643](https://github.com/aztfmods/terraform-azure-vmss/commit/974f6433e5636016ceb446fe48697a9a08640fa2))
+
 ## [1.4.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.3.1...v1.4.0) (2023-07-05)
 
 
