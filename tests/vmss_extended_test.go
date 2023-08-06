@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -12,39 +13,41 @@ import (
 )
 
 func TestLinuxScaleSet(t *testing.T) {
-	t.Parallel()
+	t.Run("VerifyLinuxScaleSets", func(t *testing.T) {
+		t.Parallel()
 
-	tfOptions := shared.GetTerraformOptions("../examples/complete")
-	defer shared.Cleanup(t, tfOptions)
-	terraform.InitAndApply(t, tfOptions)
+		tfOptions := shared.GetTerraformOptions("../examples/complete")
+		defer shared.Cleanup(t, tfOptions)
+		terraform.InitAndApply(t, tfOptions)
 
-	vmss := terraform.OutputMap(t, tfOptions, "vmss")
-	vmssName, ok := vmss["name"]
-	require.True(t, ok, "VMSS name not found in terraform output")
+		vmss := terraform.OutputMap(t, tfOptions, "vmss")
+		vmssName, ok := vmss["name"]
+		require.True(t, ok, "VMSS name not found in terraform output")
 
-	resourceGroupName, ok := vmss["resource_group_name"]
-	require.True(t, ok, "Resource group name not found in terraform output")
+		resourceGroupName, ok := vmss["resource_group_name"]
+		require.True(t, ok, "Resource group name not found in terraform output")
 
-	subscriptionID := terraform.Output(t, tfOptions, "subscriptionId")
-	require.NotEmpty(t, subscriptionID, "Subscription ID not found in terraform output")
+		subscriptionID := terraform.Output(t, tfOptions, "subscriptionId")
+		require.NotEmpty(t, subscriptionID, "Subscription ID not found in terraform output")
 
-	cred, err := azidentity.NewDefaultAzureCredential(nil)
-	if err != nil {
-		t.Fatalf("Failed to create credentials: %v", err)
-	}
+		cred, err := azidentity.NewDefaultAzureCredential(nil)
+		if err != nil {
+			t.Fatalf("Failed to create credentials: %v", err)
+		}
 
-	client, err := armcompute.NewVirtualMachineScaleSetsClient(subscriptionID, cred, nil)
-	if err != nil {
-		t.Fatalf("Failed to create VMSS client: %v", err)
-	}
+		client, err := armcompute.NewVirtualMachineScaleSetsClient(subscriptionID, cred, nil)
+		if err != nil {
+			t.Fatalf("Failed to create VMSS client: %v", err)
+		}
 
-	resp, err := client.Get(context.Background(), resourceGroupName, vmssName, nil)
-	if err != nil {
-		t.Fatalf("Failed to get VMSS: %v", err)
-	}
+		resp, err := client.Get(context.Background(), resourceGroupName, vmssName, nil)
+		if err != nil {
+			t.Fatalf("Failed to get VMSS: %v", err)
+		}
 
-	t.Run("VerifyLinuxScaleSet", func(t *testing.T) {
-		verifyLinuxScaleset(t, vmssName, &resp.VirtualMachineScaleSet)
+		t.Run("VerifyLinuxScaleSet", func(t *testing.T) {
+			verifyLinuxScaleset(t, vmssName, &resp.VirtualMachineScaleSet)
+		})
 	})
 }
 
@@ -63,5 +66,11 @@ func verifyLinuxScaleset(t *testing.T, vmssName string, vmss *armcompute.Virtual
 		"Succeeded",
 		string(*vmss.Properties.ProvisioningState),
 		"VMSS provisioning state is not 'Succeeded'",
+	)
+
+	require.True(
+		t,
+		strings.HasPrefix(vmssName, "vmss"),
+		"VMSS name does not begin with the right abbreviation",
 	)
 }
