@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.5.0...v1.6.0) (2023-08-06)
+
+
+### Features
+
+* grouped tests together and added a small check to ensured the right azure abbreviation is used ([#44](https://github.com/aztfmods/terraform-azure-vmss/issues/44)) ([d5cc01b](https://github.com/aztfmods/terraform-azure-vmss/commit/d5cc01bacbc0241bb25e37d44b0f63085366fae0))
+
 ## [1.5.0](https://github.com/aztfmods/terraform-azure-vmss/compare/v1.4.0...v1.5.0) (2023-08-05)
 
 
